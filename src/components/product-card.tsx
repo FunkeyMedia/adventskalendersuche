@@ -7,7 +7,7 @@ import type { Product } from "@/lib/types";
 export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
   return (
     <article className="product-card">
-      <ProductVisual category={product.category} compact />
+      <ProductVisual product={product} compact />
       <div className="product-card-body">
         <div className="eyebrow-row"><span className="eyebrow">{product.category}</span>{badge ? <span className="card-badge">{badge}</span> : null}</div>
         <h3><Link href={`/produkte/${product.slug}`}>{product.title}</Link></h3>

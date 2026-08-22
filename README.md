@@ -15,7 +15,7 @@ Eine deutschsprachige Produktempfehlungs-, Finder- und Vergleichswebsite für Ad
 - sichtbare Affiliate-Kennzeichnung und sichere externe Links
 - datensparsames Affiliate-Klickereignis ohne Finder-Antworten oder Personenangaben
 - Sitemap, robots.txt, kanonische URLs, Metadaten und zulässige strukturierte Daten
-- eigene SVG-Icons und redaktionelle Kategoriesymbole statt kopierter Amazon-Produktbilder
+- eigene SVG-Icons und freigestellte, als KI-generiert gekennzeichnete Produktdarstellungen statt kopierter Amazon-Produktbilder
 
 ## Technologie
 

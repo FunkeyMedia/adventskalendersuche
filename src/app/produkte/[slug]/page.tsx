@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: { params: Params }) {
       <div className="container">
         <nav className="breadcrumbs" aria-label="Brotkrümelnavigation"><Link href="/produkte">Produkte</Link><span aria-hidden="true">/</span><span>{product.category}</span></nav>
         <section className="product-detail-hero">
-          <ProductVisual category={product.category} />
+          <ProductVisual product={product} priority />
           <div className="product-detail-copy">
             <span className="eyebrow">{product.category}</span>
             <h1>{product.title}</h1>

@@ -1,23 +1,23 @@
-import { CategoryIcon } from "@/components/icons";
+import Image from "next/image";
+import { productImageFor } from "@/lib/product-images";
+import type { Product } from "@/lib/types";
 
-const palette: Record<string, string> = {
-  "Beauty & Pflege": "rose",
-  "Bücher & Geschichten": "gold",
-  "Genuss & Lebensmittel": "berry",
-  "Rätsel & Experimente": "fir",
-  "Basteln & Kreativität": "clay",
-  Spielzeug: "blue",
-  "LEGO & Klemmbausteine": "blue",
-  Haustiere: "clay",
-  "Schmuck & Accessoires": "rose",
-};
-
-export function ProductVisual({ category, compact = false }: { category: string; compact?: boolean }) {
+export function ProductVisual({ product, compact = false, priority = false }: { product: Product; compact?: boolean; priority?: boolean }) {
   return (
-    <div className={`product-visual ${palette[category] || "fir"} ${compact ? "compact" : ""}`} aria-label={`Symbolbild für ${category}`} role="img">
-      <div className="visual-door"><CategoryIcon category={category} /></div>
-      <span>{category}</span>
-      <small>Redaktionelles Symbolbild</small>
-    </div>
+    <figure className={`product-visual ${compact ? "compact" : ""}`}>
+      <div className="product-image-frame">
+        <Image
+          src={productImageFor(product)}
+          alt={`KI-generierte, freigestellte redaktionelle Darstellung für ${product.title}`}
+          fill
+          priority={priority}
+          sizes={compact ? "(max-width: 720px) 100vw, 320px" : "(max-width: 900px) 100vw, 560px"}
+        />
+      </div>
+      <figcaption>
+        <span>{product.category}</span>
+        <small>KI-generierte redaktionelle Darstellung · kein Original-Packshot</small>
+      </figcaption>
+    </figure>
   );
 }

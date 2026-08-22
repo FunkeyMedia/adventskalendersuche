@@ -15,7 +15,7 @@ function Recommendation({ result, role, accent }: { result: MatchResult; role: s
   return (
     <article className={`recommendation ${accent ? "featured" : ""}`}>
       <div className="recommendation-head"><span className="role-label">{role}</span><div className="match-score"><strong>{result.score}%</strong><span>Match</span></div></div>
-      <ProductVisual category={product.category} />
+      <ProductVisual product={product} />
       <div className="recommendation-body">
         <span className="eyebrow">{product.category}</span>
         <h2>{product.title}</h2>
