@@ -38,6 +38,10 @@ const referenceMatchedImages: Record<string, string> = {
   "AK-0014": "/products/asin-b0h2ds81tc.png",
   "AK-0015": "/products/asin-b0b9sl1dwm.png",
   "AK-0016": "/products/asin-b0h4th637c.png",
+  "AK-0017": "/products/asin-b0h56c8c6q.png",
+  "AK-0018": "/products/asin-b0gznp93jv.png",
+  "AK-0019": "/products/asin-b0flxwhp51.png",
+  "AK-0020": "/products/asin-b0fcfty5zf.png",
   "AK-0188": "/products/asin-b0h7w2fvsd.png",
 };
 
