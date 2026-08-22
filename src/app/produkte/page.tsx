@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
+import { TitleHero } from "@/components/title-hero";
 import { categories, products } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -22,15 +23,17 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   });
 
   return (
-    <div className="page-shell catalog-page">
-      <div className="container">
-        <header className="page-intro catalog-intro">
-          <span className="kicker">Die kuratierte Auswahl</span>
-          <h1>200 Wege zu 24 Tagen Vorfreude.</h1>
-          <p>Durchsuche unsere strukturierte Datenbasis. Für eine persönliche, begründete Auswahl ist der Finder der schnellere Weg.</p>
-          <Link href="/finder" className="button">Persönlichen Finder starten</Link>
-        </header>
-
+    <div className="catalog-page">
+      <TitleHero
+        kicker="Die kuratierte Auswahl"
+        title="200 Wege zu 24 Tagen Vorfreude."
+        description="Entdecke Themen, Ideen und Menschen hinter dem Geschenk – oder lass dir im Finder drei passende Wege zeigen."
+        desktopImage="/heroes/hero-08-auswahl-desktop.webp"
+        mobileImage="/heroes/hero-08-auswahl-mobile.webp"
+        alt="Vier Erwachsene verschiedener Generationen entdecken gemeinsam unterschiedliche Adventskalender."
+        priority
+      ><Link href="/finder" className="button button-light">Persönlichen Finder starten</Link></TitleHero>
+      <div className="page-shell catalog-body"><div className="container">
         <form className="catalog-filters" action="/produkte" method="get">
           <div>
             <label htmlFor="product-search">Name, Marke oder Thema</label>
@@ -55,7 +58,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         {filtered.length ? <div className="product-grid catalog-grid">{filtered.map((product) => <ProductCard key={product.id} product={product} />)}</div> : (
           <div className="empty-state"><h2>Kein Treffer in dieser Kombination</h2><p>Probiere einen allgemeineren Suchbegriff oder entferne den Kategorienfilter.</p><Link href="/produkte" className="button button-ghost">Alle Produkte zeigen</Link></div>
         )}
-      </div>
+      </div></div>
     </div>
   );
 }

@@ -18,7 +18,6 @@ export function CompareClient() {
 
   return (
     <div className="compare-shell">
-      <header className="page-intro"><span className="kicker">Unterschiede zuerst</span><h1>Vergleichen, ohne sich zu verlieren.</h1><p>Wähle zwei bis vier Kalender. Fehlende Informationen werden offen benannt; Preise sind nur dokumentierte Momentaufnahmen.</p></header>
       <div className="compare-picker"><label htmlFor="product-add">Produkt hinzufügen</label><select id="product-add" value="" onChange={(event) => add(event.target.value)} disabled={ids.length >= 4}><option value="">Kalender auswählen …</option>{products.filter((product) => !ids.includes(product.id)).map((product) => <option key={product.id} value={product.id}>{product.title}</option>)}</select><span>{ids.length}/4 gewählt</span></div>
       {selected.length < 2 ? <div className="empty-state compact"><h2>Wähle mindestens zwei Kalender</h2><p>Du kannst direkt hier Produkte ergänzen oder Empfehlungen aus dem Finder übernehmen.</p><Link href="/finder" className="button">Finder starten</Link></div> : (
         <div className="compare-grid" style={{ "--compare-count": selected.length } as React.CSSProperties}>
