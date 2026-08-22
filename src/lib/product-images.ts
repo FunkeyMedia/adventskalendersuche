@@ -21,6 +21,21 @@ const individualImages: Record<string, string> = {
   "AK-0007": "/products/ak-0007.png",
 };
 
-export function productImageFor(product: Pick<Product, "id" | "category">) {
-  return individualImages[product.id] ?? categoryImages[product.category] ?? "/products/category-other.png";
+const referenceMatchedImages: Record<string, string> = {
+  "AK-0188": "/products/asin-b0h7w2fvsd.png",
+};
+
+export type ProductImageAssignment = {
+  src: string;
+  referenceMatched: boolean;
+};
+
+export function productImageFor(product: Pick<Product, "id" | "category">): ProductImageAssignment {
+  const matched = referenceMatchedImages[product.id];
+  if (matched) return { src: matched, referenceMatched: true };
+
+  return {
+    src: individualImages[product.id] ?? categoryImages[product.category] ?? "/products/category-other.png",
+    referenceMatched: false,
+  };
 }
