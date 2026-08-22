@@ -22,6 +22,14 @@ const individualImages: Record<string, string> = {
 };
 
 const referenceMatchedImages: Record<string, string> = {
+  "AK-0001": "/products/asin-3522186397.png",
+  "AK-0002": "/products/asin-b0d8wqz1cw.png",
+  "AK-0003": "/products/asin-3911099274.png",
+  "AK-0004": "/products/asin-3910890954.png",
+  "AK-0005": "/products/asin-3911984022.png",
+  "AK-0006": "/products/asin-b0dkhlpzp9.png",
+  "AK-0007": "/products/asin-b01my4wl6t.png",
+  "AK-0008": "/products/asin-b09gg2ql5h.png",
   "AK-0188": "/products/asin-b0h7w2fvsd.png",
 };
 
