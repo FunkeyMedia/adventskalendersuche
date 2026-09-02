@@ -110,12 +110,21 @@ export function rankProducts(items: Product[], answers: FinderAnswers) {
 
 export function selectRecommendations(items: Product[], answers: FinderAnswers) {
   const ranked = rankProducts(items, answers);
-  const best = ranked[0];
-  const relevant = ranked.filter((item) => item.score >= Math.max(55, (best?.score || 55) - 18));
-  const budget = relevant
+  const top = ranked[0];
+  const relevant = ranked.filter((item) => item.score >= Math.max(55, (top?.score || 55) - 18));
+  const preferredCategories = answers.interest ? interestCategories[answers.interest] : [];
+  const exact = relevant.filter((item) => {
+    const categoryMatches = preferredCategories.length === 0 || preferredCategories.includes(item.product.category);
+    if (!answers.budget || answers.budget === "offen" || item.product.observedPrice === null) return categoryMatches;
+    const [min, max] = budgetRanges[answers.budget];
+    return categoryMatches && item.product.observedPrice >= min && item.product.observedPrice < max;
+  });
+  const candidates = exact.length >= 3 ? exact : relevant;
+  const best = candidates[0] ?? top;
+  const budget = candidates
     .filter((item) => item.product.id !== best?.product.id && item.product.observedPrice !== null)
     .toSorted((a, b) => (a.product.observedPrice || 999) - (b.product.observedPrice || 999))[0];
-  const premium = relevant
+  const premium = candidates
     .filter((item) => ![best?.product.id, budget?.product.id].includes(item.product.id))
     .toSorted((a, b) => b.product.score - a.product.score || (b.product.observedPrice || 0) - (a.product.observedPrice || 0))[0];
   return { best, budget: budget || ranked[1], premium: premium || ranked[2], ranked };

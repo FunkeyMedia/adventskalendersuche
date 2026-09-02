@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { calculateMatch, selectRecommendations } from "@/lib/finder";
+import { products } from "@/lib/products";
 import type { Product } from "@/lib/types";
+import { RESULT_ROLES } from "@/components/results-client";
 
 const base: Product = {
   id: "AK-TEST", slug: "test", asin: "B000TEST", title: "Beauty Adventskalender für Frauen", brand: "Test",
@@ -25,5 +27,15 @@ describe("finder ranking", () => {
     const items = [base, { ...base, id: "2", observedPrice: 18, score: 80 }, { ...base, id: "3", observedPrice: 69, score: 95 }];
     const result = selectRecommendations(items, { recipient: "frau", interest: "beauty", budget: "offen" });
     expect(new Set([result.best.product.id, result.budget.product.id, result.premium.product.id]).size).toBe(3);
+    expect(RESULT_ROLES.third).toBe("Weitere passende Alternative");
+  });
+
+  it("keeps Paar, Genuss and 20–40 € recommendations inside the chosen theme and budget", () => {
+    const result = selectRecommendations(products, { recipient: "paar", interest: "genuss", budget: "20bis40", priority: "offen" });
+    const recommendations = [result.best, result.budget, result.premium];
+
+    expect(recommendations).toHaveLength(3);
+    expect(recommendations.every((item) => item.product.category === "Genuss & Lebensmittel")).toBe(true);
+    expect(recommendations.every((item) => item.product.observedPrice !== null && item.product.observedPrice >= 20 && item.product.observedPrice < 40)).toBe(true);
   });
 });

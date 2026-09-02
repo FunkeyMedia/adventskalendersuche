@@ -10,6 +10,12 @@ import { formatCheckedDate } from "@/lib/products";
 import { products } from "@/lib/products";
 import type { MatchResult } from "@/lib/types";
 
+export const RESULT_ROLES = {
+  best: "Unsere beste Empfehlung für dich",
+  budget: "Preisbewusste Alternative",
+  third: "Weitere passende Alternative",
+} as const;
+
 function Recommendation({ result, role, accent }: { result: MatchResult; role: string; accent?: boolean }) {
   const { product } = result;
   return (
@@ -42,7 +48,7 @@ export function ResultsClient() {
   return (
     <>
       <header className="results-intro"><span className="kicker">Deine Vorfreude-Landkarte</span><h1>Drei klare Wege statt 200 Fragezeichen.</h1><p>Der Match-Score basiert auf deinen Antworten, Zielgruppe, Budget, Thema, Altersfiltern und unserer dokumentierten Datenprüfung.</p><div className="results-actions"><Link href="/finder" className="button button-ghost">Antworten anpassen</Link><Link href={`/vergleich?ids=${comparisonIds}`} className="button">Diese drei vergleichen</Link></div></header>
-      <div className="recommendation-grid"><Recommendation result={best} role="Unsere beste Empfehlung für dich" accent /><Recommendation result={budget} role="Preisbewusste Alternative" /><Recommendation result={premium} role="Premium- oder Spezialalternative" /></div>
+      <div className="recommendation-grid"><Recommendation result={best} role={RESULT_ROLES.best} accent /><Recommendation result={budget} role={RESULT_ROLES.budget} /><Recommendation result={premium} role={RESULT_ROLES.third} /></div>
       <p className="affiliate-disclosure">* Affiliate-Link: Wenn du darüber kaufst, erhalten wir möglicherweise eine Provision. Für dich ändert sich der Preis nicht. Preise und Verfügbarkeit werden erst auf Amazon verbindlich angezeigt.</p>
     </>
   );
