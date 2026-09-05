@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { AffiliateLink } from "@/components/affiliate-link";
+import { AmazonOffer } from "@/components/amazon-offer";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { ProductVisual } from "@/components/product-visual";
-import { formatCheckedDate } from "@/lib/products";
-import type { Product } from "@/lib/types";
+import { formatCheckedDate, getAmazonAffiliateUrl } from "@/lib/products";
+import type { ProductWithAmazon } from "@/lib/types";
 
-export function ProductCard({ product, badge }: { product: Product; badge?: string }) {
+export function ProductCard({ product, badge }: { product: ProductWithAmazon; badge?: string }) {
   return (
     <article className="product-card">
       <ProductVisual product={product} compact />
@@ -16,7 +18,9 @@ export function ProductCard({ product, badge }: { product: Product; badge?: stri
           <li><CheckIcon />{product.budgetClass}</li>
           <li><CheckIcon />{product.audience}</li>
         </ul>
+        <AmazonOffer product={product} compact />
         <p className="data-date">Produktdaten geprüft am {formatCheckedDate(product.lastChecked)}</p>
+        <AffiliateLink href={getAmazonAffiliateUrl(product)} productId={product.id} className="amazon-button">Bei Amazon ansehen*</AffiliateLink>
         <div className="card-actions">
           <Link href={`/produkte/${product.slug}`} className="text-link">Details <ArrowIcon /></Link>
           <Link href={`/vergleich?ids=${product.id}`} className="subtle-link">Vergleichen</Link>

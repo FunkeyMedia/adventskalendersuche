@@ -26,6 +26,37 @@ export type Product = {
   sponsoredSearchResult: boolean;
 };
 
+export type AmazonImage = {
+  url: string;
+  width: number;
+  height: number;
+};
+
+export type AmazonMoney = {
+  amount: number;
+  currency: string;
+  displayAmount: string;
+};
+
+export type AmazonProductData = {
+  asin: string;
+  title: string | null;
+  detailPageUrl: string;
+  image: AmazonImage | null;
+  price: AmazonMoney | null;
+  savingBasis: AmazonMoney | null;
+  savingsPercentage: number | null;
+  availabilityType: string | null;
+  availabilityMessage: string | null;
+  dealBadge: string | null;
+  merchantName: string | null;
+  fetchedAt: string;
+};
+
+export type ProductWithAmazon = Product & {
+  amazon?: AmazonProductData | null;
+};
+
 export type FinderAnswers = {
   recipient?: "kind" | "frau" | "mann" | "paar" | "familie" | "haustier" | "offen";
   interest?: "genuss" | "beauty" | "knobeln" | "kreativ" | "spiel" | "lesen" | "schmuck" | "offen";

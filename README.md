@@ -10,12 +10,14 @@ Eine deutschsprachige Produktempfehlungs-, Finder- und Vergleichswebsite für Ad
 - personalisierte Empfehlung, Budget- und Premiumalternative
 - transparenter Match-Score mit Gründen und möglichen Einschränkungen
 - Vergleich von zwei bis vier Produkten
-- 200 filterbare Produkte und 200 statisch erzeugte Detailseiten
-- Ratgeber, Methodik, Über uns, Kontakt und rechtliche Seiten
+- 200 filterbare Produkte und dynamische Produktdetailseiten
+- Ratgeber-Hub mit 100 beantworteten Fragen in zehn Themenwelten, dynamischen Produktvergleichen und FAQ-Strukturdaten
+- Methodik, Über uns, Kontakt und rechtliche Seiten
 - sichtbare Affiliate-Kennzeichnung und sichere externe Links
 - datensparsames Affiliate-Klickereignis ohne Finder-Antworten oder Personenangaben
 - Sitemap, robots.txt, kanonische URLs, Metadaten und zulässige strukturierte Daten
-- eigene SVG-Icons und freigestellte, als KI-generiert gekennzeichnete Produktdarstellungen statt kopierter Amazon-Produktbilder
+- Amazon-Originalbilder, Angebotsdaten und Affiliate-Ziele über die Creators API
+- sichere Rückfallebene mit den vorhandenen redaktionellen Produktmotiven, falls Amazon vorübergehend nicht erreichbar ist
 
 ## Technologie
 
@@ -72,7 +74,7 @@ Jedes Produkt enthält unter anderem:
 - Budgetklasse und dokumentierte Preisbeobachtung
 - Datenstand und Affiliate-Ziel
 
-Preise, Verfügbarkeit und Amazon-Bewertungen werden nicht als Livewerte ausgegeben. Verbindlich ist die aktuelle Amazon-Produktseite.
+Originalbilder, Angebotspreis und Verfügbarkeit werden – bei eingerichteten Zugangsdaten – serverseitig über Amazons Creators API geladen. Angebotsdaten werden höchstens eine Stunde zwischengespeichert. Verbindlich bleibt die aktuelle Amazon-Produktseite.
 
 ## Finder- und Ranking-Logik
 
@@ -98,13 +100,17 @@ SOURCE_FILE=/absoluter/pfad/produkte.json pnpm data:prepare
 
 Neue Produktdetailseiten, Katalogeinträge und Sitemap-URLs entstehen automatisch aus `src/data/products.generated.json`.
 
-## Amazon-Affiliate-ID
+## Amazon Creators API und Affiliate-ID
 
 Die aktuelle Partner-ID lautet `onlinestarkei-21`.
 
-- Dokumentation und Zielkonfiguration: `NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG` in `.env.example`
-- Die normalisierten Affiliate-Ziele stehen produktbezogen in `src/data/products.generated.json`.
-- Vor einem Tag-Wechsel müssen die Ziel-URLs neu erzeugt und geprüft werden.
+- Die frühere Product Advertising API (PA-API 5.0) ist abgekündigt. Diese Anwendung nutzt den offiziellen Nachfolger Creators API.
+- API-Zugangsdaten werden ausschließlich serverseitig verwendet und niemals an den Browser ausgeliefert.
+- Access Tokens werden bis kurz vor Ablauf wiederverwendet. Angebotsdaten werden eine Stunde gecacht; bei API-Fehlern bleibt die Website mit redaktionellen Bildern und dem Link „Preis bei Amazon ansehen“ nutzbar.
+- `GetItems` wird in Paketen von höchstens zehn ASINs aufgerufen. Temporäre Fehler und Limits werden mit begrenztem exponentiellem Backoff behandelt.
+- Von Amazon gelieferte Affiliate-Ziele haben Vorrang vor den normalisierten Rückfall-URLs in `src/data/products.generated.json`.
+
+Die Zugangsdaten werden im deutschen PartnerNet unter **Tools → Creators API** als Anwendung erzeugt. Für deutsche Zugangsdaten ist in der Regel Credential-Version `3.2` vorgesehen.
 
 Externe Links verwenden `rel="sponsored nofollow noopener noreferrer"` und öffnen in einem neuen Tab. Das Klickereignis über `/api/events` enthält nur Ereignistyp, interne Produkt-ID und Zeitpunkt.
 
@@ -114,16 +120,22 @@ Externe Links verwenden `rel="sponsored nofollow noopener noreferrer"` und öffn
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Produktionsbasis für Metadaten, Sitemap und robots.txt |
 | `NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG` | dokumentiert die zentral verwendete Amazon-Partner-ID |
+| `AMAZON_ASSOCIATE_TAG` | serverseitig verwendete Amazon-Partner-ID |
+| `AMAZON_CREATORS_CREDENTIAL_ID` | geheime Credential-ID der Creators-API-Anwendung |
+| `AMAZON_CREATORS_CREDENTIAL_SECRET` | geheimer Schlüssel der Creators-API-Anwendung |
+| `AMAZON_CREATORS_CREDENTIAL_VERSION` | Credential-Region, für Deutschland `3.2` |
+| `AMAZON_CREATORS_MARKETPLACE` | Ziel-Marktplatz, standardmäßig `www.amazon.de` |
 
-Es werden keine geheimen Zugangsdaten im Repository gespeichert.
+Die beiden Credential-Werte müssen nur in `.env.local` und in den geschützten Vercel Environment Variables stehen. Sie dürfen nicht mit `NEXT_PUBLIC_` beginnen und werden nicht im Repository gespeichert.
 
 ## Deployment auf Vercel
 
 1. Repository in Vercel importieren.
 2. Framework Preset `Next.js` und Package Manager `pnpm` verwenden.
 3. `NEXT_PUBLIC_SITE_URL` auf die endgültige Produktions-URL setzen.
-4. deployen und Finder, Vergleich, Produktseiten sowie die rechtlichen Seiten prüfen.
-5. Bei einer späteren Custom Domain dieselbe URL in der Umgebungsvariable aktualisieren und erneut deployen.
+4. die fünf serverseitigen Amazon-Variablen aus `.env.example` in Vercel hinterlegen.
+5. deployen und Finder, Vergleich, Produktseiten sowie die rechtlichen Seiten prüfen.
+6. Bei einer späteren Custom Domain dieselbe URL in der Umgebungsvariable aktualisieren und erneut deployen.
 
 ## Betreibermaßnahmen vor öffentlichem Betrieb
 

@@ -1,5 +1,5 @@
 import productsJson from "@/data/products.generated.json";
-import type { Product } from "@/lib/types";
+import type { Product, ProductWithAmazon } from "@/lib/types";
 
 export const products = productsJson as Product[];
 
@@ -23,4 +23,8 @@ export function formatObservedPrice(price: number | null) {
 
 export function formatCheckedDate(value: string) {
   return new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(value));
+}
+
+export function getAmazonAffiliateUrl(product: ProductWithAmazon) {
+  return product.amazon?.detailPageUrl || product.affiliateUrl;
 }
