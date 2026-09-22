@@ -4,6 +4,7 @@ import type { AmazonProductData, Product, ProductWithAmazon } from "@/lib/types"
 
 const MARKETPLACE = process.env.AMAZON_CREATORS_MARKETPLACE || "www.amazon.de";
 const API_URL = "https://creatorsapi.amazon/catalog/v1/getItems";
+const GATEWAY_URL = process.env.AMAZON_CREATORS_GATEWAY_URL;
 const CACHE_SECONDS = 60 * 60;
 const TOKEN_SAFETY_SECONDS = 60;
 
@@ -76,6 +77,33 @@ async function getAccessToken(config: ApiConfig, forceRefresh = false): Promise<
 
 async function requestChunk(asins: string[]): Promise<AmazonProductData[]> {
   const config = getConfig();
+  const gatewaySecret = process.env.AMAZON_CREATORS_GATEWAY_SECRET;
+
+  async function requestGateway() {
+    if (!GATEWAY_URL || !gatewaySecret) return null;
+    const url = new URL(GATEWAY_URL);
+    url.searchParams.set("ids", asins.join(","));
+    const response = await fetchWithRetry(url.toString(), {
+      headers: { authorization: `Bearer ${gatewaySecret}` },
+      cache: "no-store",
+    });
+    if (!response.ok) throw new Error(`Amazon gateway request failed (${response.status})`);
+    const payload = await response.json() as { items?: AmazonProductData[] };
+    return Array.isArray(payload.items) ? payload.items : [];
+  }
+
+  if (GATEWAY_URL && gatewaySecret) {
+    try {
+      return (await requestGateway()) ?? [];
+    } catch (gatewayError) {
+      console.error(
+        "Amazon gateway unavailable",
+        gatewayError instanceof Error ? gatewayError.message : "Unknown error",
+      );
+      if (!config) return [];
+    }
+  }
+
   if (!config) return [];
   const apiConfig: ApiConfig = config;
 
@@ -126,7 +154,7 @@ function normalizeAsins(asins: string[]) {
 }
 
 export function isAmazonCreatorsApiConfigured() {
-  return getConfig() !== null;
+  return getConfig() !== null || Boolean(GATEWAY_URL && process.env.AMAZON_CREATORS_GATEWAY_SECRET);
 }
 
 export async function getAmazonItems(asins: string[]): Promise<Map<string, AmazonProductData>> {

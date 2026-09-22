@@ -125,8 +125,10 @@ Externe Links verwenden `rel="sponsored nofollow noopener noreferrer"` und öffn
 | `AMAZON_CREATORS_CREDENTIAL_SECRET` | geheimer Schlüssel der Creators-API-Anwendung |
 | `AMAZON_CREATORS_CREDENTIAL_VERSION` | Credential-Region, für Deutschland `3.2` |
 | `AMAZON_CREATORS_MARKETPLACE` | Ziel-Marktplatz, standardmäßig `www.amazon.de` |
+| `AMAZON_CREATORS_GATEWAY_URL` | optionaler serverseitiger Creators-API-Gateway-Endpunkt |
+| `AMAZON_CREATORS_GATEWAY_SECRET` | geheimer Zugriffsschlüssel für den Gateway-Endpunkt |
 
-Die beiden Credential-Werte müssen nur in `.env.local` und in den geschützten Vercel Environment Variables stehen. Sie dürfen nicht mit `NEXT_PUBLIC_` beginnen und werden nicht im Repository gespeichert.
+Die Credential- beziehungsweise Gateway-Schlüssel müssen nur in `.env.local` und in den geschützten Vercel Environment Variables stehen. Sie dürfen nicht mit `NEXT_PUBLIC_` beginnen und werden nicht im Repository gespeichert. Ist ein Gateway eingerichtet, verwendet die Website diesen bevorzugt und greift nur ohne Gateway auf eigene Creators-API-Zugangsdaten zurück.
 
 ## Deployment auf Vercel
 
