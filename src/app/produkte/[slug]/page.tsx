@@ -7,11 +7,15 @@ import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import { ProductVisual } from "@/components/product-visual";
 import { enrichProductsWithAmazon } from "@/lib/amazon-creators-api";
-import { formatCheckedDate, getAmazonAffiliateUrl, getProduct, getProductsByCategory } from "@/lib/products";
+import { formatCheckedDate, getAmazonAffiliateUrl, getProduct, getProductsByCategory, products } from "@/lib/products";
 
 type Params = Promise<{ slug: string }>;
 
 export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return products.map((product) => ({ slug: product.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;

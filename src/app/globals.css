@@ -615,3 +615,6 @@ h3 { line-height: 1.25; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.catalog-page-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .15rem; }
+.catalog-page-links a[aria-current="page"] { background: #e7f3f3; color: #164849; font-weight: 800; }

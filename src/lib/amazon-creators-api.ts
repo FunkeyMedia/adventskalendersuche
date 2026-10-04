@@ -1,3 +1,4 @@
+import { setTimeout as delay } from "node:timers/promises";
 import { unstable_cache } from "next/cache";
 import { parseCreatorsApiItems } from "@/lib/amazon-creators-parser";
 import type { AmazonProductData, Product, ProductWithAmazon } from "@/lib/types";
@@ -35,6 +36,7 @@ function getTokenEndpoint(version: string) {
 async function fetchWithRetry(url: string, init: RequestInit, attempts = 3): Promise<Response> {
   let response: Response | null = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
+    init.signal?.throwIfAborted();
     response = await fetch(url, init);
     if (![429, 500, 502, 503, 504].includes(response.status)) return response;
     if (attempt < attempts - 1) {
@@ -42,17 +44,18 @@ async function fetchWithRetry(url: string, init: RequestInit, attempts = 3): Pro
       const waitMs = Number.isFinite(retryAfter) && retryAfter > 0
         ? retryAfter * 1000
         : 350 * (2 ** attempt);
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
+      await delay(waitMs, undefined, { signal: init.signal ?? undefined });
     }
   }
   return response as Response;
 }
 
-async function getAccessToken(config: ApiConfig, forceRefresh = false): Promise<string> {
+async function getAccessToken(config: ApiConfig, signal: AbortSignal, forceRefresh = false): Promise<string> {
   const now = Date.now();
   if (!forceRefresh && tokenCache && tokenCache.expiresAt > now) return tokenCache.value;
 
   const response = await fetchWithRetry(getTokenEndpoint(config.credentialVersion), {
+    signal,
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -76,6 +79,8 @@ async function getAccessToken(config: ApiConfig, forceRefresh = false): Promise<
 }
 
 async function requestChunk(asins: string[]): Promise<AmazonProductData[]> {
+  // One shared deadline covers gateway, token, retries and direct API fallback.
+  const signal = AbortSignal.timeout(2500);
   const config = getConfig();
   const gatewaySecret = process.env.AMAZON_CREATORS_GATEWAY_SECRET;
 
@@ -84,6 +89,7 @@ async function requestChunk(asins: string[]): Promise<AmazonProductData[]> {
     const url = new URL(GATEWAY_URL);
     url.searchParams.set("ids", asins.join(","));
     const response = await fetchWithRetry(url.toString(), {
+      signal,
       headers: { authorization: `Bearer ${gatewaySecret}` },
       cache: "no-store",
     });
@@ -108,8 +114,9 @@ async function requestChunk(asins: string[]): Promise<AmazonProductData[]> {
   const apiConfig: ApiConfig = config;
 
   async function send(forceRefresh = false) {
-    const accessToken = await getAccessToken(apiConfig, forceRefresh);
+    const accessToken = await getAccessToken(apiConfig, signal, forceRefresh);
     return fetchWithRetry(API_URL, {
+      signal,
       method: "POST",
       headers: {
         authorization: `Bearer ${accessToken}`,
@@ -162,15 +169,16 @@ export async function getAmazonItems(asins: string[]): Promise<Map<string, Amazo
   const result = new Map<string, AmazonProductData>();
   if (!normalized.length || !isAmazonCreatorsApiConfigured()) return result;
 
-  for (let index = 0; index < normalized.length; index += 10) {
-    const chunk = normalized.slice(index, index + 10);
+  const chunks: string[][] = [];
+  for (let index = 0; index < normalized.length; index += 10) chunks.push(normalized.slice(index, index + 10));
+  await Promise.all(chunks.map(async (chunk) => {
     try {
       const items = await getCachedChunk(JSON.stringify(chunk));
       for (const item of items) result.set(item.asin.toUpperCase(), item);
     } catch (error) {
       console.error("Amazon Creators API enrichment unavailable", error instanceof Error ? error.message : "Unknown error");
     }
-  }
+  }));
   return result;
 }
 

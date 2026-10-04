@@ -3,39 +3,25 @@ import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import { TitleHero } from "@/components/title-hero";
 import { enrichProductsWithAmazon } from "@/lib/amazon-creators-api";
-import { categories, products } from "@/lib/products";
+import { categories } from "@/lib/products";
+import { CATALOG_PAGE_SIZE, getCatalog, type CatalogParams } from "@/lib/catalog";
 
-export const metadata: Metadata = {
-  title: "200 Adventskalender entdecken",
-  description: "Entdecke 200 redaktionell strukturierte Adventskalender mit Amazon-Originalbildern, aktuellen Angebotspreisen und transparentem Datenstand.",
-  alternates: { canonical: "/produkte" },
-};
+type SearchParams = Promise<CatalogParams>;
 
-type SearchParams = Promise<{ kategorie?: string; q?: string; seite?: string }>;
+export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+  const catalog = getCatalog(await searchParams);
+  return {
+    title: `200 Adventskalender entdecken${catalog.currentPage > 1 ? ` – Seite ${catalog.currentPage}` : ""}`,
+    description: "Entdecke 200 redaktionell strukturierte Adventskalender mit Amazon-Originalbildern, aktuellen Angebotspreisen und transparentem Datenstand.",
+    alternates: { canonical: catalog.pageHref(catalog.currentPage) },
+    ...(catalog.query || catalog.category ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
-  const category = params.kategorie?.trim() || "";
-  const query = params.q?.trim().toLocaleLowerCase("de-DE") || "";
-  const filtered = products.filter((product) => {
-    const matchesCategory = !category || product.category === category;
-    const haystack = `${product.title} ${product.brand} ${product.category} ${product.audience}`.toLocaleLowerCase("de-DE");
-    return matchesCategory && (!query || haystack.includes(query));
-  });
-  const pageSize = 24;
-  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const requestedPage = Number.parseInt(params.seite || "1", 10);
-  const currentPage = Math.min(pageCount, Math.max(1, Number.isFinite(requestedPage) ? requestedPage : 1));
-  const pageProducts = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const { category, query, filtered, currentPage, pageCount, pageHref, pageProducts } = getCatalog(params);
   const enrichedProducts = await enrichProductsWithAmazon(pageProducts);
-  const pageHref = (page: number) => {
-    const next = new URLSearchParams();
-    if (params.q) next.set("q", params.q);
-    if (category) next.set("kategorie", category);
-    if (page > 1) next.set("seite", String(page));
-    const search = next.toString();
-    return search ? `/produkte?${search}` : "/produkte";
-  };
 
   return (
     <div className="catalog-page">
@@ -68,13 +54,13 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         <div className="catalog-status" role="status">
           <strong>{filtered.length}</strong> {filtered.length === 1 ? "Kalender" : "Kalender"}
           {category ? <span> in „{category}“</span> : null}
-          {filtered.length > pageSize ? <span> · Seite {currentPage} von {pageCount}</span> : null}
+          {filtered.length > CATALOG_PAGE_SIZE ? <span> · Seite {currentPage} von {pageCount}</span> : null}
         </div>
 
         {filtered.length ? <><div className="product-grid catalog-grid">{enrichedProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div>{pageCount > 1 ? (
           <nav className="catalog-pagination" aria-label="Katalogseiten">
             {currentPage > 1 ? <Link href={pageHref(currentPage - 1)}>← Zurück</Link> : <span aria-disabled="true">← Zurück</span>}
-            <strong>Seite {currentPage} von {pageCount}</strong>
+            <div className="catalog-page-links">{Array.from({ length: pageCount }, (_, index) => index + 1).map((page) => <Link key={page} href={pageHref(page)} aria-label={`Katalogseite ${page}`} aria-current={page === currentPage ? "page" : undefined}>{page}</Link>)}</div>
             {currentPage < pageCount ? <Link href={pageHref(currentPage + 1)}>Weiter →</Link> : <span aria-disabled="true">Weiter →</span>}
           </nav>
         ) : null}</> : (
