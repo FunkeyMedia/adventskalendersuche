@@ -112,7 +112,7 @@ export function FinderClient() {
       {restored ? <p className="restore-note">Dein letzter Zwischenstand wurde wiederhergestellt. <button type="button" onClick={reset}>Neu beginnen</button></p> : null}
       <div className="finder-question" key={question.key}>
         <span className="kicker">Eine Entscheidung genügt</span>
-        <h1 id="finder-question">{question.title}</h1>
+        <h2 id="finder-question">{question.title}</h2>
         <p>{question.hint}</p>
         <div className="answer-grid">
           {question.options.map((option) => {

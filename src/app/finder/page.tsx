@@ -7,7 +7,7 @@ export default function FinderPage() {
   return <div className="finder-page finder-page-with-hero">
     <TitleHero
       kicker="Schenken beginnt mit Zuhören"
-      title="Wen möchtest du zum Leuchten bringen?"
+      title="Dein Adventskalender-Finder"
       description="Ein paar ehrliche Antworten genügen. Wir übersetzen Wünsche in eine nachvollziehbare Auswahl, die wirklich zur Person passt."
       desktopImage="/heroes/hero-07-generationen-desktop.webp"
       mobileImage="/heroes/hero-07-generationen-mobile.webp"
