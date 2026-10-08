@@ -3,7 +3,7 @@ import { AffiliateLink } from "@/components/affiliate-link";
 import { AmazonOffer } from "@/components/amazon-offer";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { ProductVisual } from "@/components/product-visual";
-import { formatCheckedDate, getAmazonAffiliateUrl } from "@/lib/products";
+import { getBudgetLabel, formatCheckedDate, getAmazonAffiliateUrl } from "@/lib/products";
 import type { MatchResult, ProductWithAmazon } from "@/lib/types";
 
 type EnrichedMatchResult = Omit<MatchResult, "product"> & { product: ProductWithAmazon };
@@ -28,7 +28,7 @@ function Recommendation({ result, role, accent }: { result: EnrichedMatchResult;
         <ul className="reason-list">{result.reasons.map((reason) => <li key={reason}><CheckIcon />{reason}</li>)}</ul>
         {result.cautions.length ? <div className="caution"><strong>Gut zu wissen</strong><p>{result.cautions.join(" · ")}</p></div> : null}
         <AmazonOffer product={product} compact />
-        <div className="result-meta"><span>{product.budgetClass}</span><span>Stand {formatCheckedDate(product.lastChecked)}</span></div>
+        <div className="result-meta"><span>{getBudgetLabel(product)}</span><span>Stand {formatCheckedDate(product.lastChecked)}</span></div>
         <AffiliateLink href={getAmazonAffiliateUrl(product)} productId={product.id} className="amazon-button">Bei Amazon ansehen* <ArrowIcon /></AffiliateLink>
         <Link href={`/produkte/${product.slug}`} className="text-link">Alle Details ansehen</Link>
       </div>

@@ -1,3 +1,4 @@
+import { formatCheckedDate } from "@/lib/products";
 import type { CSSProperties } from "react";
 import type { ProductWithAmazon } from "@/lib/types";
 
@@ -53,6 +54,7 @@ export function AmazonOffer({ product, compact = false }: { product: ProductWith
           <span className="amazon-stars" style={ratingStyle} aria-hidden="true">★★★★★</span>
           <span>{rating.toLocaleString("de-DE")}</span>
           {product.reviews ? <span className="amazon-review-count">({product.reviews.toLocaleString("de-DE")})</span> : null}
+        <small>Bewertungsstand {formatCheckedDate(product.lastChecked)}</small>
         </div>
       ) : null}
       <p className={`amazon-availability ${available === true ? "available" : available === false ? "unavailable" : ""}`}>

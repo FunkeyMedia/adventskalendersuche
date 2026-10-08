@@ -11,7 +11,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://adventskalendersuch
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "Adventskalendersuche – Finde den Kalender, der wirklich passt", template: "%s | Adventskalendersuche" },
-  description: "Der transparente Adventskalender-Finder: 200 geprüfte Produkte, nachvollziehbare Match-Scores und ehrliche Vergleiche für Deutschland.",
+  description: "Der transparente Adventskalender-Finder: 200 Produkte im Katalog, nachvollziehbare Match-Scores und ehrliche Vergleiche für Deutschland.",
   alternates: { canonical: "/" },
   openGraph: { type: "website", locale: "de_DE", siteName: "Adventskalendersuche", title: "24 Tage. Ein Volltreffer.", description: "Finde in wenigen Schritten den Adventskalender, der wirklich zur Person passt.", images: [{ url: "/heroes/hero-01-familie-desktop.webp", width: 1920, height: 800, alt: "Familie öffnet gemeinsam einen Adventskalender" }] },
   twitter: { card: "summary_large_image", title: "Adventskalendersuche", description: "Dein transparenter Adventskalender-Finder.", images: ["/heroes/hero-01-familie-desktop.webp"] },

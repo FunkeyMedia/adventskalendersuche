@@ -1,3 +1,6 @@
+import { SeasonNote } from "@/components/season-note";
+import { guideModifiedDate } from "@/lib/season-review";
+import { formatCheckedDate } from "@/lib/products";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,7 +31,7 @@ export async function generateMetadata({ params }: GuidePageProps): Promise<Meta
       description: guide.description,
       images: [{ url: guide.hero, alt: guide.heroAlt }],
       publishedTime: "2026-09-05T00:00:00.000Z",
-      modifiedTime: "2026-09-05T00:00:00.000Z",
+      modifiedTime: `${guideModifiedDate(slug)}T00:00:00.000Z`,
     },
   };
 }
@@ -52,7 +55,7 @@ export default async function GuideDetailPage({ params }: GuidePageProps) {
         description: guide.description,
         image: `${siteUrl}${guide.hero}`,
         datePublished: "2026-09-05",
-        dateModified: "2026-09-05",
+        dateModified: guideModifiedDate(slug),
         inLanguage: "de-DE",
         author: { "@type": "Organization", name: "Redaktion Adventskalendersuche" },
         publisher: { "@type": "Organization", name: "Adventskalendersuche", url: siteUrl },
@@ -91,7 +94,7 @@ export default async function GuideDetailPage({ params }: GuidePageProps) {
             <span className="kicker light">{guide.kicker}</span>
             <h1>{guide.title}</h1>
             <p>{guide.description}</p>
-            <div className="guide-meta"><span>Redaktion Adventskalendersuche</span><span>Aktualisiert am 5. September 2026</span><span>{guide.topics.length} ausführliche Antworten</span></div>
+            <div className="guide-meta"><span>Redaktion Adventskalendersuche</span><span>Aktualisiert am {formatCheckedDate(guideModifiedDate(slug))}</span><span>{guide.topics.length} ausführliche Antworten</span></div>
           </div>
         </header>
 
@@ -101,6 +104,7 @@ export default async function GuideDetailPage({ params }: GuidePageProps) {
             {guide.topics.map((topic, index) => <a href={`#${topic.id}`} key={topic.id}>{index + 1}. {topic.title}</a>)}
           </aside>
           <div className="guide-article-body">
+            {slug === "beauty-wellness-adventskalender" ? <SeasonNote productId="AK-0002" /> : null}
             <section className="guide-answer-box" aria-labelledby="kurz-erklaert">
               <span className="kicker">Kurz erklärt</span>
               <h2 id="kurz-erklaert">Die wichtigste Antwort vorab</h2>
