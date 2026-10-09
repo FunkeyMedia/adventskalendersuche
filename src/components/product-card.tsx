@@ -1,9 +1,10 @@
+import { SeasonNote } from "@/components/season-note";
 import Link from "next/link";
 import { AffiliateLink } from "@/components/affiliate-link";
 import { AmazonOffer } from "@/components/amazon-offer";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 import { ProductVisual } from "@/components/product-visual";
-import { formatCheckedDate, getAmazonAffiliateUrl } from "@/lib/products";
+import { getBudgetLabel, formatCheckedDate, getAmazonAffiliateUrl } from "@/lib/products";
 import type { ProductWithAmazon } from "@/lib/types";
 
 export function ProductCard({ product, badge }: { product: ProductWithAmazon; badge?: string }) {
@@ -15,11 +16,12 @@ export function ProductCard({ product, badge }: { product: ProductWithAmazon; ba
         <h3><Link href={`/produkte/${product.slug}`}>{product.title}</Link></h3>
         <p className="product-brand">{product.brand}</p>
         <ul className="mini-benefits">
-          <li><CheckIcon />{product.budgetClass}</li>
+          <li><CheckIcon />{getBudgetLabel(product)}</li>
           <li><CheckIcon />{product.audience}</li>
         </ul>
+        <SeasonNote productId={product.id} />
         <AmazonOffer product={product} compact />
-        <p className="data-date">Produktdaten geprüft am {formatCheckedDate(product.lastChecked)}</p>
+        <p className="data-date">Katalogstand {formatCheckedDate(product.lastChecked)}</p>
         <AffiliateLink href={getAmazonAffiliateUrl(product)} productId={product.id} className="amazon-button">Bei Amazon ansehen*</AffiliateLink>
         <div className="card-actions">
           <Link href={`/produkte/${product.slug}`} className="text-link">Details <ArrowIcon /></Link>

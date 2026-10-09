@@ -39,7 +39,7 @@ const questions: Question[] = [
     { value: "schmuck", label: "Schmuck", description: "Accessoires und kleine Highlights", icon: "spark" },
     { value: "offen", label: "Überrascht mich", description: "Thema bewusst offenlassen", icon: "compass" },
   ]},
-  { key: "budget", title: "Welcher Rahmen fühlt sich gut an?", hint: "Wir verwenden Budgetklassen – der aktuelle Amazon-Preis kann sich ändern.", options: [
+  { key: "budget", title: "Welcher Rahmen fühlt sich gut an?", hint: "Die Budgetauswahl basiert auf dokumentierten Preisständen. Aktuelle Amazon-Preise können abweichen.", options: [
     { value: "unter20", label: "Bis 20 €", description: "Kleine Freude, klug gewählt", icon: "door" },
     { value: "20bis40", label: "20–40 €", description: "Die beliebte Mitte", icon: "gift" },
     { value: "40bis70", label: "40–70 €", description: "Mehr Inhalt und Auswahl", icon: "spark" },

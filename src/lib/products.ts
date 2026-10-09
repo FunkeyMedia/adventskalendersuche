@@ -28,3 +28,14 @@ export function formatCheckedDate(value: string) {
 export function getAmazonAffiliateUrl(product: ProductWithAmazon) {
   return product.amazon?.detailPageUrl || product.affiliateUrl;
 }
+
+export function getBudgetLabel(product: ProductWithAmazon) {
+  const price = product.amazon?.price;
+  if (price?.currency === "EUR" && Number.isFinite(price.amount) && price.amount >= 0) {
+    if (price.amount < 20) return "Unter 20 €";
+    if (price.amount < 40) return "20 bis unter 40 €";
+    if (price.amount < 70) return "40 bis unter 70 €";
+    return "Ab 70 €";
+  }
+  return `${product.budgetClass} (Preisstand ${formatCheckedDate(product.lastChecked)})`;
+}

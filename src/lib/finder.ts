@@ -84,7 +84,7 @@ export function calculateMatch(product: Product, answers: FinderAnswers): MatchR
 
   if (answers.budget && answers.budget !== "offen") {
     const [min, max] = budgetRanges[answers.budget];
-    if (product.observedPrice !== null && product.observedPrice >= min && product.observedPrice < max) reasons.push("liegt in der gewählten Budgetklasse");
+    if (product.observedPrice !== null && product.observedPrice >= min && product.observedPrice < max) reasons.push("lag bei der dokumentierten Preisprüfung in der gewählten Budgetklasse");
     else cautions.push("kann außerhalb des gewünschten Budgets liegen");
   }
   if (product.prime) reasons.push("Prime-Kennzeichnung war bei der Prüfung sichtbar");
@@ -137,11 +137,15 @@ export function answersToSearchParams(answers: FinderAnswers) {
 }
 
 export function searchParamsToAnswers(params: URLSearchParams): FinderAnswers {
+  const pick = <T extends string>(key: string, allowed: readonly T[]): T | undefined => {
+    const value = params.get(key);
+    return allowed.find((candidate) => candidate === value);
+  };
   return {
-    recipient: (params.get("recipient") || undefined) as FinderAnswers["recipient"],
-    interest: (params.get("interest") || undefined) as FinderAnswers["interest"],
-    budget: (params.get("budget") || undefined) as FinderAnswers["budget"],
-    childAge: (params.get("childAge") || undefined) as FinderAnswers["childAge"],
-    priority: (params.get("priority") || undefined) as FinderAnswers["priority"],
+    recipient: pick("recipient", ["kind", "frau", "mann", "paar", "familie", "haustier", "offen"] as const),
+    interest: pick("interest", ["genuss", "beauty", "knobeln", "kreativ", "spiel", "lesen", "schmuck", "offen"] as const),
+    budget: pick("budget", ["unter20", "20bis40", "40bis70", "ueber70", "offen"] as const),
+    childAge: pick("childAge", ["unter6", "6bis9", "10bis13", "14bis17"] as const),
+    priority: pick("priority", ["preis", "qualitaet", "nachhaltigkeit", "ueberraschung", "offen"] as const),
   };
 }

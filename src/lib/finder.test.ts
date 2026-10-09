@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateMatch, selectRecommendations } from "@/lib/finder";
+import { calculateMatch, selectRecommendations, searchParamsToAnswers } from "@/lib/finder";
 import { products } from "@/lib/products";
 import type { Product } from "@/lib/types";
 import { RESULT_ROLES } from "@/components/results-client";
@@ -16,7 +16,7 @@ describe("finder ranking", () => {
   it("rewards matching interest, recipient and budget", () => {
     const result = calculateMatch(base, { recipient: "frau", interest: "beauty", budget: "20bis40", priority: "qualitaet" });
     expect(result?.score).toBeGreaterThanOrEqual(85);
-    expect(result?.reasons).toContain("liegt in der gewählten Budgetklasse");
+    expect(result?.reasons).toContain("lag bei der dokumentierten Preisprüfung in der gewählten Budgetklasse");
   });
 
   it("excludes pet products for non-pet recipients", () => {
@@ -37,5 +37,16 @@ describe("finder ranking", () => {
     expect(recommendations).toHaveLength(3);
     expect(recommendations.every((item) => item.product.category === "Genuss & Lebensmittel")).toBe(true);
     expect(recommendations.every((item) => item.product.observedPrice !== null && item.product.observedPrice >= 20 && item.product.observedPrice < 40)).toBe(true);
+  });
+});
+
+describe("finder URL validation", () => {
+  it("ignores unknown URL values and still produces recommendations", () => {
+    const answers = searchParamsToAnswers(new URLSearchParams("recipient=unknown&interest=invalid&budget=cheap&priority=bad&childAge=0"));
+    expect(Object.values(answers).every((value) => value === undefined)).toBe(true);
+    expect(selectRecommendations(products, answers).best).toBeDefined();
+  });
+  it("preserves supported URL values", () => {
+    expect(searchParamsToAnswers(new URLSearchParams("recipient=kind&interest=lesen&budget=unter20&childAge=6bis9&priority=preis"))).toEqual({recipient:"kind",interest:"lesen",budget:"unter20",childAge:"6bis9",priority:"preis"});
   });
 });

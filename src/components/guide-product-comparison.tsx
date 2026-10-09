@@ -6,7 +6,7 @@ import { AmazonOffer } from "@/components/amazon-offer";
 import { CheckIcon } from "@/components/icons";
 import { ProductVisual } from "@/components/product-visual";
 import { useAmazonProducts } from "@/components/use-amazon-products";
-import { getAmazonAffiliateUrl } from "@/lib/products";
+import { getBudgetLabel, getAmazonAffiliateUrl } from "@/lib/products";
 import type { Product } from "@/lib/types";
 
 export function GuideProductComparison({ products }: { products: Product[] }) {
@@ -38,7 +38,7 @@ export function GuideProductComparison({ products }: { products: Product[] }) {
               <p>{product.description}</p>
               <ul className="guide-product-facts">
                 <li><CheckIcon /><span><strong>Zielgruppe</strong>{product.audience}</span></li>
-                <li><CheckIcon /><span><strong>Budget</strong>{product.budgetClass}</span></li>
+                <li><CheckIcon /><span><strong>Budget</strong>{getBudgetLabel(product)}</span></li>
                 <li><CheckIcon /><span><strong>Umfang</strong>{product.doors ? `${product.doors} Türchen oder Einheiten` : "Beim Anbieter prüfen"}</span></li>
               </ul>
               <AmazonOffer product={product} compact />
