@@ -3,6 +3,7 @@ import { Instrument_Serif, Manrope } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const editorial = Instrument_Serif({ subsets: ["latin"], variable: "--font-editorial", weight: "400", display: "swap" });
@@ -21,5 +22,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#fbf7ef", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="de" data-scroll-behavior="smooth" className={`${manrope.variable} ${editorial.variable}`}><body><a href="#main" className="skip-link">Zum Inhalt springen</a><Header /><main id="main">{children}</main><Footer /></body></html>;
+  return <html lang="de" data-scroll-behavior="smooth" className={`${manrope.variable} ${editorial.variable}`}><body><a href="#main" className="skip-link">Zum Inhalt springen</a><Header /><main id="main">{children}</main><Footer /><Analytics /></body></html>;
 }
