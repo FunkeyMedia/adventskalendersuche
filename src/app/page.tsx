@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowIcon, CheckIcon, DoorIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import { enrichProductsWithAmazon } from "@/lib/amazon-creators-api";
@@ -6,6 +7,13 @@ import { guideClusters } from "@/lib/guides";
 import { products } from "@/lib/products";
 
 const featuredProducts = [products[0], products[1], products[7]];
+const seasonGuideSlugs = ["adventskalender-kaufberatung", "adventskalender-kinder-teenager", "essen-trinken-adventskalender", "beauty-wellness-adventskalender", "adventskalender-hobbys-interessen"];
+const seasonGuides = seasonGuideSlugs.map(slug => guideClusters.find(guide => guide.slug === slug)!).filter(Boolean);
+export const metadata: Metadata = {
+  title: "Adventskalender 2026 auswählen: Kinder, Beauty & Genuss",
+  description: "Finde einen passenden Adventskalender für die Saison 2026. Auswahlhilfen für Kinder, Beauty, Genuss und Hobbys mit Angaben zu Inhalt, Budget und Jahresausgabe.",
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const featured = await enrichProductsWithAmazon(featuredProducts);
@@ -22,6 +30,8 @@ export default async function HomePage() {
       </section>
 
       <section className="trust-ribbon" aria-label="Vertrauensmerkmale"><div className="container"><span>Originalbilder direkt von Amazon</span><span>Preise über Amazon Creators API</span><span>Match-Logik vollständig erklärt</span><span>Amazon-Preis bleibt verbindlich</span></div></section>
+
+      <section className="section home-guide-teaser" aria-labelledby="saison-auswahl"><div className="container"><div className="section-heading"><span className="kicker">Vorfreude 2026</span><h2 id="saison-auswahl">Fünf Wege zum passenden Adventskalender</h2><p>Wähle zuerst Person und Interesse. Unsere Themenwelten helfen bei Inhalt, Budget und Kaufentscheidung. Achte beim Angebot auf die Jahresausgabe: Im Katalog sind auch ältere Ausgaben und jahresunabhängige Kalender enthalten.</p></div><nav className="home-guide-links" aria-label="Adventskalender für die Saison 2026">{seasonGuides.map(guide => <Link key={guide.slug} href={`/ratgeber/${guide.slug}`}><span>{guide.kicker}</span><strong>{guide.shortTitle}</strong><small>{guide.description}</small></Link>)}</nav></div></section>
 
       <section className="section problem-section"><div className="container split-layout"><div><span className="kicker">Weniger Scrollen. Besser schenken.</span><h2>Ein Adventskalender ist keine Kategorie. Er ist ein täglicher Moment.</h2></div><div><p>Zwischen Beauty, Büchern, Rätseln und Spielzeug wird aus Vorfreude schnell Auswahlstress. Unser Finder übersetzt Wünsche in verständliche Kriterien und zeigt nicht hundert Treffer, sondern drei begründete Wege.</p><Link href="/finder" className="text-link">Jetzt Orientierung finden <ArrowIcon /></Link></div></div></section>
 
