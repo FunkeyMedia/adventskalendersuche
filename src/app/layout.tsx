@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
 import { Footer } from "@/components/footer";
@@ -22,5 +23,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#fbf7ef", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="de" data-scroll-behavior="smooth" className={`${manrope.variable} ${editorial.variable}`}><body><a href="#main" className="skip-link">Zum Inhalt springen</a><Header /><main id="main">{children}</main><Footer /><Analytics /></body></html>;
+  return <html lang="de" data-scroll-behavior="smooth" className={`${manrope.variable} ${editorial.variable}`}><body><a href="#main" className="skip-link">Zum Inhalt springen</a><Header /><main id="main">{children}</main><Footer /><Analytics /><aside className="affiliate-tracking-note" style={{textAlign:"center",padding:12,fontSize:12}}><a href="/amazon-klickstatistik.html">Amazon-Klickstatistik / Click measurement</a></aside><Script id="affiliate-amazon-tracking" src="/affiliate-amazon-tracking.js" strategy="afterInteractive" /></body></html>;
 }
