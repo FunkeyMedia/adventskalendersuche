@@ -43,7 +43,11 @@
     var placement = link.closest('[data-finder-results],.finder-product,.finder-results,#finder,#finder-results') ? 'finder' : link.closest('[data-comparison],.comparison,#vergleich,#compare') ? 'comparison' : link.closest('article') ? 'article' : link.closest('main') ? 'content' : 'navigation';
     setup();
     queue();
-    if (typeof window.va === 'function') window.va('event', {name:'amazon_click',data:{asin:asin,placement:placement}});
+    window.va('beforeSend', function (event) {
+      if (!allowed()) return null;
+      try { var page = new URL(event.url); return Object.assign({}, event, {url:page.origin + page.pathname}); } catch (_) { return null; }
+    });
+    window.va('event', {name:'amazon_click',data:{asin:asin,placement:placement}});
   }
   document.addEventListener('click', click, true);
   document.addEventListener('auxclick', click, true);
