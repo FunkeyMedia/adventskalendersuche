@@ -9,7 +9,7 @@ const base: Product = {
   category: "Beauty & Pflege", audience: "Erwachsene / Frauen", minimumAge: null, doors: 24,
   description: "Test", features: null, advantages: [], disadvantages: [], warnings: null, sustainability: null,
   observedPrice: 35, budgetClass: "20–40 €", prime: true, availability: "Auf Lager", rating: 4.7, reviews: 120,
-  affiliateUrl: "https://www.amazon.de/dp/B000TEST?tag=onlinestarkei-21", lastChecked: "2026-08-22T10:00:00Z", score: 88, sponsoredSearchResult: false,
+  affiliateUrl: "https://www.amazon.de/dp/B000TEST?tag=adventskalendersuche-21", lastChecked: "2026-08-22T10:00:00Z", score: 88, sponsoredSearchResult: false,
 };
 
 describe("finder ranking", () => {

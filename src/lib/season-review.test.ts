@@ -12,7 +12,7 @@ describe("season review consistency", () => {
       const entry = entries.find((entry) => entry.url.endsWith(`/produkte/${product.slug}`));
       expect(entry).toBeDefined();
       expect(new Date(entry!.lastModified!).toISOString()).toBe(new Date(seasonReviews[product.id] ? SEASON_REVIEW_DATE : product.lastChecked).toISOString());
-      expect(new URL(product.affiliateUrl).searchParams.get("tag")).toBe("onlinestarkei-21");
+      expect(new URL(product.affiliateUrl).searchParams.get("tag")).toBe("adventskalendersuche-21");
     }
     expect(guideModifiedDate("beauty-wellness-adventskalender")).toBe(SEASON_REVIEW_DATE);
     expect(guideModifiedDate("adventskalender-kaufberatung")).toBe("2026-09-05");
